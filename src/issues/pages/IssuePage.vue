@@ -10,7 +10,7 @@ const route = useRoute()
 
 const { id } = route.params
 
-const { issueQuery } = useIssue(+id)
+const { issueQuery, issueCommentsQuery } = useIssue(+id)
 
 </script>
 
@@ -24,11 +24,10 @@ const { issueQuery } = useIssue(+id)
     <IssueCard v-else-if="issueQuery.data.value" :issue="issueQuery.data.value" />
     <p v-else>....</p>
     <!-- Comments -->
-    <LoaderSpinner :thickness="1" size="1rem" :showText="false" />
-    <div class="column">
-        <span class="text-h3 q-mb-md"> Comments {{ 5 }}</span>
-        <!-- <IssueCard v-for="comment of issueQuery.data.value?.comments ||" :key="comment" /> -->
-
+    <LoaderSpinner v-if="issueCommentsQuery.isLoading.value" :thickness="1" size="1rem" :showText="false" />
+    <div v-else-if="issueCommentsQuery.data.value" class="column">
+        <span class="text-h3 q-mb-md"> Comments {{ issueCommentsQuery.data.value.length }}</span>
+        <IssueCard v-for="comment of issueCommentsQuery.data.value" :key="comment.id" :issue="comment" />
     </div>
 </template>
 
