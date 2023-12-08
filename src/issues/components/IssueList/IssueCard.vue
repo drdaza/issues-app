@@ -14,7 +14,8 @@ const props = defineProps<Props>()
 
 const issue = toRef(props, 'issue')
 
-const { preFetchIssue, setIssueCacheData } = useIssue(issue.value.number, { autoload: false })
+const { setIssueCacheData } = useIssue(issue.value.number, { autoload: false })
+// const { preFetchIssue, setIssueCacheData } = useIssue(issue.value.number, { autoload: false })
 
 // const onMouseEnter = () => {
 //     console.log('prefetch', issue.value.number)

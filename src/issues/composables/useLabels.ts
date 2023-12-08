@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/vue-query'
 import { gitHubApi } from 'src/api/gitHubApi'
-import { Label } from '../interfaaces/label'
+import { Label } from '../interfaces/label'
 import { computed, ref, watch } from 'vue'
 import { useIssuesStore } from 'src/stores/issues'
 
@@ -18,7 +18,7 @@ const useLabels = () => {
     const issuesStore = useIssuesStore()
 
 
-    const labels = ref<Label[]>()
+    const labels = ref<Label[]>() || []
 
     const { data, isLoading, isError } = useQuery({
         queryKey:['labels'],
