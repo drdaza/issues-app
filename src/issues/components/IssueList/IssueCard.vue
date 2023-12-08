@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useIssue from 'src/issues/composables/useIssue';
 import { Issue, State } from 'src/issues/interfaces/issue';
 import { timeSince } from 'src/shared/helpers/time-since';
 import { toRef } from 'vue';
@@ -13,11 +14,18 @@ const props = defineProps<Props>()
 
 const issue = toRef(props, 'issue')
 
+const { preFetchIssue, setIssueCacheData } = useIssue(issue.value.number, { autoload: false })
+
+// const onMouseEnter = () => {
+//     console.log('prefetch', issue.value.number)
+    
+// }
+
 </script>
 
 
 <template>
-    <q-card class="text-black col-12 q-mb-md" flat bordered>
+    <q-card @mouseenter="setIssueCacheData(issue)" class="text-black col-12 q-mb-md" flat bordered>
         <q-item>
             <q-item-section avatar>
                 <q-avatar>

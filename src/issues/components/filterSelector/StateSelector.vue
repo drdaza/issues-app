@@ -9,7 +9,7 @@ const issuesStore = useIssuesStore()
     <q-btn-toggle v-model="issuesStore.state" toggle-color="primary" push spread :options="[
         { label: 'All', value: '' },
         { label: 'Open', value: 'open' },
-        { label: 'Close', value: 'close' }
+        { label: 'Close', value: 'closed' }
     ]" />
 </template>
 

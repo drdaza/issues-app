@@ -4,7 +4,7 @@ import FilterSelector from '../components/filterSelector/FilterSelector.vue';
 import IssueList from '../components/IssueList/IssueList.vue';
 import useIssues from '../composables/useIssues';
 
-const { data, isLoading, isError } = useIssues()
+const { data, isLoading } = useIssues()
 
 // console.log(data);
 

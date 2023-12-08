@@ -1,7 +1,7 @@
 import { gitHubApi } from 'src/api/gitHubApi'
 import { Issue } from '../interfaces/issue'
-import { useQuery } from '@tanstack/vue-query'
-import { computed } from 'vue'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
+// import { computed } from 'vue'
 
 
 const getIssue = async (issueNumber: number):Promise<Issue> => {
@@ -19,25 +19,66 @@ const getIssueComments = async (issueNumber: number):Promise<Issue[]> => {
 }
 
 
-const useIssue = (issueNumber: number) => {
+interface Options {
+    autoload?: boolean
+}
+
+const useIssue = (issueNumber: number, options?: Options) => {
+
+
+    const { autoload= true } = options || {}
+
+    const queryClient = useQueryClient()
+
+
 
     const issueQuery = useQuery({
         queryKey: ['issue', issueNumber],
         queryFn: () => getIssue(issueNumber),
-        staleTime: 1000 * 60
+        staleTime: 1000 * 60,
+        enabled: autoload
     })
 
     const issueCommentsQuery = useQuery({
         queryKey: ['issue', issueNumber, 'comments'],
         queryFn: () => getIssueComments(issueQuery.data.value?.number || 0),
         staleTime: 1000 * 15,
-        enabled: computed( () => !!issueQuery.data.value)
+        enabled: autoload
+        // enabled: computed( () => !!issueQuery.data.value)
     })
+
+    const preFetchIssue = ( issueNumber: number ) => {
+        queryClient.prefetchQuery(
+            {
+                queryKey: ['issue', issueNumber],
+                queryFn: () => getIssue(issueNumber),
+                staleTime: 1000 * 60
+            }
+        )
+        
+
+
+        queryClient.prefetchQuery({
+            queryKey: ['issue', issueNumber, 'comments'],
+            queryFn: () => getIssueComments(issueNumber),
+            staleTime: 1000 * 15,
+            // enabled: computed( () => !!issueQuery.data.value)
+        })
+    }
+
+    const setIssueCacheData = (issue: Issue) => {
+        queryClient.setQueryData(['issue', issue.number], issue)
+    }
 
 
     return {
         issueQuery,
-        issueCommentsQuery
+        issueCommentsQuery,
+
+
+        // methods
+        preFetchIssue,
+        setIssueCacheData
     }
 }
 export default useIssue
