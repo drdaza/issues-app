@@ -12,7 +12,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
         <q-item-label header>
           Essential Links
@@ -34,6 +34,7 @@ import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue'
 
 
 // console.log(process.env);
+const leftDrawerOpen = ref<boolean>(false)
 
 const essentialLinks: EssentialLinkProps[] = [
   {
@@ -44,9 +45,8 @@ const essentialLinks: EssentialLinkProps[] = [
   }
 ];
 
-const leftDrawerOpen = ref(false)
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>

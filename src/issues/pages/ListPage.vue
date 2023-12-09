@@ -29,14 +29,14 @@ const buttons = [{
 }] as Button[]
 
 
-const test = computed(() => {
-    const cosas: string[] = []
-    const test = labels.value
+const labelNames = computed(() => {
+    const labelsNames: string[] = []
+    const labelsValues = labels.value
 
-    for (const key in test) {
-        cosas.push(test[parseInt(key)].name)
+    for (const label in labelsValues) {
+        labelsNames.push(labelsValues[parseInt(label)].name)
     }
-    return cosas
+    return labelsNames
 })
 
 
@@ -62,7 +62,7 @@ const test = computed(() => {
 
     <FloatingButtons :buttons="buttons" />
 
-    <NewIssueDialog v-if="labels" :isOpen="isOpen" :labels="test" @onClose="openDialog" />
+    <NewIssueDialog v-if="labels" :isOpen="isOpen" :labels="labelNames" @onClose="openDialog" />
 </template>
 
 <style scoped></style>

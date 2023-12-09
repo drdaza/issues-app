@@ -3,6 +3,7 @@
 import { ref, toRef, watch } from 'vue';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
+import useIssueMutation from '../composables/useIssueMutation';
 
 interface Props {
     isOpen: boolean,
@@ -21,19 +22,33 @@ const isOpenDialog = ref<boolean>(false)
 
 const title = ref<string>('')
 const body = ref<string>('body')
-const labelsOptions = ref<string[]>(['asdasd'])
+const labelsOptions = ref<string[]>([])
 
 const labels = toRef(props, 'labels')
+const { issueMutation } = useIssueMutation()
+
 watch(props, () => {
     isOpenDialog.value = props.isOpen
 })
+
+watch(() => issueMutation.isSuccess.value, (isSuccess) => {
+    if (isSuccess) {
+        title.value = ''
+        body.value = ''
+        labelsOptions.value = []
+
+        issueMutation.reset()
+        emits('onClose')
+    }
+})
+
 
 </script>
 <template>
     <div class="q-pa-md q-gutter-sm">
         <q-dialog v-model="isOpenDialog" position="bottom" persistent>
             <q-card style="width: 500px">
-                <q-form>
+                <q-form @submit="issueMutation.mutate({ title, body, labels: labelsOptions })">
                     <q-linear-progress :value="1" color="primary" />
 
                     <q-card-section class="column no-wrap">
@@ -44,7 +59,8 @@ watch(props, () => {
 
                         <q-space />
                         <div>
-                            <q-input dense filled v-model="title" label="title" placeholder="title" class="q-mb-sm" />
+                            <q-input dense filled v-model="title" label="title" placeholder="title" class="q-mb-sm"
+                                :rules="[val => !!val || 'Field is required']" />
                             <q-select dense filled v-model="labelsOptions" multiple :options="labels" use-chips stack-label
                                 label="Multiple selection" class="q-mb-sm" />
 
@@ -56,9 +72,10 @@ watch(props, () => {
                     </q-card-section>
 
                     <q-card-actions align="left">
-                        <q-btn flat label="cancel" v-close-popup color="dark" @click="emits('onClose')" />
+                        <q-btn :disable="issueMutation.isPending.value" flat label="cancel" v-close-popup color="dark"
+                            @click="emits('onClose')" />
                         <q-space />
-                        <q-btn type="submit" flat label="add issue" v-close-popup color="dark" />
+                        <q-btn :disable="issueMutation.isPending.value" type="submit" flat label="add issue" color="dark" />
                     </q-card-actions>
                 </q-form>
 
